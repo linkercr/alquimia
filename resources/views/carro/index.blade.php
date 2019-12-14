@@ -69,6 +69,28 @@
 </div>
 </div>
 </form>
+{{--modals --}}
+<!-- Modal recibos  -->
+<!-- Modal -->
+<div class="modal fade" id="detallerecibo" style="overflow-y: scroll;">
+        <div class="modal-dialog ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Detalles</h5>
+                    <button type="button" class="close" data-dismiss="modal" onclick="mostrarModalGrupoFact();"><span class="ti-close"></span>
+                    </button>
+                </div>
+
+                                  <div class="modal-body" id="datosRecibo">
+
+                                  </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-primary" onclick="imprimirFact();">Imprimir</button>
+                  <button type="button" class="btn btn-secondary" onclick="mostrarModalGrupoFact();" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 {{--contenido admin--}}
                                 <input type="hidden" id="id_factura_perfil" value="">
 <input type="hidden" id="id_grupo_factura" value="">
@@ -97,7 +119,7 @@
                                 <table id="info-table" class="table table-striped table-bordered zero-configuration">
                                         <thead>
                                             <tr>
-                                                <th><div class="pull-center" >Código</div></th>
+                                                <th>Código</th>
                                                 <th><div class="pull-center" >Nombre</div></th>
                                                 <th><div class="pull-center" >Cantidad</div></th>
                                                 <th><div class="pull-center" >Precio</div></th>
@@ -144,7 +166,7 @@
              '<span class="fa fa-plus"></span><span class="hidden-xs"></span></a></div>';
            }},
 
-          ]
+          ],
 
         });$('select, input[type="search"]').css({
                     "background-color": "#f3f3f3",
@@ -158,6 +180,9 @@
           var id_factura_perfil = $('#id_factura_perfil').val();
         var monto_ofrecido = $('#monto').val();
         var metodo_pago = $('#id_metodo_pago').val();
+        var Numerofactura = $('#Numerofactura').val();
+        console.log(Numerofactura);
+
         var cambio = $('#cambio').val();
         $.LoadingOverlay("show");
           //comprobar que el valor escrito, son solo números.
@@ -185,6 +210,7 @@
                   type : "POST",
                   data: {
                     '_token': $('input[name=_token]').val(),
+                    'Numerofactura': Numerofactura,
                     'metodo_pago': metodo_pago,
                     'monto_ofrecido': monto_ofrecido,
                     'metodo_pago':metodo_pago
@@ -408,6 +434,9 @@ function ejecutarPedido(){
             //console.log(data);
             //window.location.href='{{ route("productos.index")}}';
             detalles_facturacion('');
+            //datosRecibo
+            $('#detallerecibo').modal('show');
+            $('#datosRecibo').html(data).fadeIn('slow');
             //success, warning, info, warning, error, position: right, left, top, bottom, Top Full Width
             //Bottom Full Width, Top Center, Bottom Center
             alerttoastr('success','Se ha procesado la solicitud sastifactoriamente!', 'Genial!', 'top-right');
@@ -420,6 +449,18 @@ function ejecutarPedido(){
               alerttoastr('error','Algo ha salido mal!', 'Oops!', 'bottom-left');
             } //7
           }); //4
+}
+//iprimir factura
+function imprimirFact(){
+    var printContents = document.getElementById('printSection').innerHTML;
+        w = window.open();
+        w.document.write(printContents);
+        w.document.close(); // necessary for IE >= 10
+        w.focus(); // necessary for IE >= 10
+		w.print();
+		w.close();
+        return true;
+        $('#detallerecibo').modal('hide');
 }
 {{--funcion eliminar registro--}}
 function deletedForm(id) {

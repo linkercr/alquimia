@@ -128,6 +128,158 @@ class PDFController extends Controller
         $vistaurl="reportes.pedidos";
         return $this->crearPDF($obj , $vistaurl,$tipo, '');
     }
+    //por usuario
+    public  function generarxUsuario(Request $request){
+        $tipo = 1;
+        $info = $request->input('fecha');
+        list($part1, $part2) = explode('-', $info);
+        $format1 = date('Y-m-d', strtotime($part1));
+        $format2 = date('Y-m-d', strtotime($part2));
+        $userid = $request->input('userid');
+            $isadmin = 1; //es admin
+            //validamos si hay abierto una factura
+            $sql = 'SELECT * FROM
+            facturas
+                INNER JOIN factura_detalles ON factura_detalles.factura_id = facturas.id
+                INNER JOIN users ON facturas.usario_id = users.id
+            WHERE
+            factura_detalles.deleted_at IS NULL AND
+            facturas.usario_id ='.$userid.' AND
+            facturas.created_at BETWEEN "'.$format1.' 01:01:01" AND "' . $format2.' 23:54:45" AND
+            facturas.f_estado =1';
+
+         $datos =DB::select( $sql);
+         //dd($datos);
+$url = url('/crear_reporte_usaurio/1/'.$format1.'/'.$format2.'/'.$userid );
+         $obj = array();
+         $sumatotal = 0;
+         $html ='
+         <a target="_blank" href=" '.$url.'" class="btn mb-1 btn-flat btn-warning">Export PDF</a>
+         <div class="table-responsive">
+         <table class="table table-striped">
+   <thead>
+     <tr>
+             <th>Factura</th>
+             <th>Usuario</th>
+                                                 <th>Total</th>
+     </tr>
+   </thead>
+   <tbody>
+         ';
+         foreach ($datos as $key) {
+            $total = $key->fd_cantidad *  $key->fd_precio_venta;
+            $sumatotal += $total;
+         $obj[] = [
+             'id'=>$key->id,
+             'factura_id'=>$key->f_numero,
+             'usuario'=>$key->name,
+             'total'=> $total,
+             'fecha'=> date("d/m/Y", strtotime($key->created_at)),
+             'sumatotal'=> $sumatotal
+           ];
+           $html .= '
+           <tr>
+        <td>'.$key->f_numero.'</td>
+        <td>'.$key->name.'</td>
+        <td>¢ '.$total.'</td>
+
+      </tr>
+           ';
+
+        }
+        $html .= '<tr>
+        <td colspan=2><h4><b>Total</b></h4></td>
+        <td colspan =2><h4> ¢ '.$sumatotal.'</h4></td>
+    </tr>
+  </tbody>
+</table>
+</div>';
+return $html;
+        $vistaurl="reportes.ventas";
+        //return $this->crearPDF($obj , $vistaurl,$tipo, '');
+
+
+        }
+    ///crear pdf usuarios
+    /*
+    **********************
+    ***************************
+    ***************/
+    public  function generarxUsuarioPDF(Request $request){
+        $tipo = 1;
+
+        $format1 = $request['fechain'];
+        //dd($format1);
+        $format2 = $request['fechafin'];
+        $fechaReporte = $format1 . $format2;
+        $userid = $request['us'];//$request->get('user_id');
+            $isadmin = 1; //es admin
+            //validamos si hay abierto una factura
+            $sql = 'SELECT * FROM
+            facturas
+                INNER JOIN factura_detalles ON factura_detalles.factura_id = facturas.id
+                INNER JOIN users ON facturas.usario_id = users.id
+            WHERE
+            factura_detalles.deleted_at IS NULL AND
+            facturas.usario_id ='.$userid.' AND
+            facturas.created_at BETWEEN "'.$format1.' 01:01:01" AND "' . $format2.' 23:54:45" AND
+            facturas.f_estado =1';
+
+         $datos =DB::select( $sql);
+         $obj = array();
+         $sumatotal = 0;
+
+         foreach ($datos as $key) {
+            $total = $key->fd_cantidad *  $key->fd_precio_venta;
+            $sumatotal += $total;
+         $obj[] = [
+             'id'=>$key->id,
+             'factura_id'=>$key->f_numero,
+             'usuario'=>$key->name,
+             'total'=> $total,
+             'fecha'=> date("d/m/Y", strtotime($key->created_at)),
+             'sumatotal'=> $sumatotal
+           ];
+
+
+        }
+        $vistaurl="reportes.ventas";
+        return $this->crearPDF($obj , $vistaurl,$tipo, $fechaReporte);
+
+
+        }
+    //crear reporte facturado
+    public function crear_detalle_facturado($tipo){
+
+            $isadmin = 2; //no es admin, es cleinte
+         //validamos si hay abierto una factura
+         $datos =DB::select('SELECT * FROM
+             facturas
+              INNER JOIN factura_detalles ON factura_detalles.factura_id = facturas.id
+              INNER JOIN users ON facturas.usario_id = users.id
+              WHERE
+              factura_detalles.deleted_at IS NULL AND
+              facturas.f_estado =1' );
+         $obj = array();
+         $sumatotal = 0;
+         foreach ($datos as $key) {
+            $total = $key->fd_cantidad *  $key->fd_precio_venta;
+            $sumatotal += $total;
+         $obj[] = [
+             'id'=>$key->id,
+             'factura_id'=>$key->f_numero,
+             'usuario'=>$key->name,
+             'total'=> $total,
+             'fecha'=> date("d/m/Y", strtotime($key->created_at)),
+             'sumatotal'=> $sumatotal
+           ];
+
+        }
+
+
+        $vistaurl="reportes.facturado";
+        return $this->crearPDF($obj , $vistaurl,$tipo, '');
+    }
     public function crearPDF($datos,$vistaurl,$tipo, $fechaReporte)
     {
         $data = $datos;

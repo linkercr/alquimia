@@ -92,12 +92,15 @@ class FacturaController extends Controller
     }
     //ejecutar pedido
     function ejecutar_pedido(Request $request){
-        $factura = Factura::findOrFail($request['Numerofactura']);
+        $numfac = $request['Numerofactura'];
+        $factura = Factura::findOrFail($numfac);
         // actualizamos cantidad
         $factura->f_estado = 1;
         $factura->update();
+        $detalleRecibo = detalles_venta($numfac);
         Un_Set_Factura_session();
-        echo json_encode('ok');
+        //echo json_encode('ok');
+        return $detalleRecibo;
 
     }
     //actualizar cantidad en bd
@@ -345,7 +348,7 @@ class FacturaController extends Controller
   }
   public function crear_metodos_pagos_facturas(Request $request)
   {
-    $idFacturaSession = session()->get('NumeroFactura');
+    $idFacturaSession = $request['Numerofactura'];
     $id_metodo_pago = $request['metodo_pago'];
     $monto_ofrecido = $request['monto_ofrecido'];
     $nuevo_monto = 0;
@@ -367,6 +370,7 @@ class FacturaController extends Controller
     } else {
       // procedemos a crear datos en tb metodo_pago_factura_perfil session()->get('IdFacturaPerfil')
       $resumen = [
+        'factura_id'=>$idFacturaSession,
         'metodo_pago_id' => $id_metodo_pago,
         'fp_monto' => $monto_ofrecido,
         'fp_vuelto' => 0

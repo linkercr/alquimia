@@ -5,14 +5,14 @@ namespace App;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Database\Eloquent\SoftDeletes;
+use Spatie\Permission\Traits\HasRoles;//plugins para roles y permisos
+use Illuminate\Support\Facades\Hash;//encriptar
+use Illuminate\Database\Eloquent\SoftDeletes;//eliminado logico algoritmo que trae el framework
 
 class User extends Authenticatable
 {
     use Notifiable;
-    use HasRoles;
+    use HasRoles;//plugins para roles y permisos
 
     /**
      * The attributes that are mass assignable.
@@ -52,7 +52,12 @@ class User extends Authenticatable
     //hash paswword
     public function setPasswordAttribute($password)
     {
-      $this->attributes['password'] = Hash::make($password);
+      $this->attributes['password'] = Hash::make($password);//encripta $5622 == $5622
+      /*
+      public function setPasswordAttribute(hola)
+      si hola = bd.pw no lo hace asi
+      si Hash::make(hola) = bd.d($82823hdn8djbaj)
+      */
     }
 
 }

@@ -32,6 +32,7 @@
                             <div class="col-md-8 col-md-offset-2">
                                     <h1>Registro Producto</h1>
                                     <hr>
+                                    @if (Auth::user()->hasRole('Admin'))
                                     @if ($errors->any())
                                     <div class="alert alert-danger">
                                         <ul>
@@ -100,6 +101,7 @@
 
                                         {{ Form::submit('Crear', array('class' => 'btn btn-success btn-lg btn-block')) }}
                                         {{ Form::close() }}
+                                        @endif
                                     </div>
                                     </div>
 

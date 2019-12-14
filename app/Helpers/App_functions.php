@@ -4,6 +4,148 @@ use App\FacturaDetalle;
 use App\Producto;
 use App\User;
 use App\MetodoPago;
+use App\Empresa;
+//tiquete para imprimir
+function detalles_venta($id){
+    date_default_timezone_set('America/Costa_Rica');
+    //detalles de tiquete / factura
+    $totalServGravados2 = 0;
+    $totalGravados = 0;
+    $totalExentos = 0;
+    $totalVentas = 0;
+    $totalDescuentos = 0;
+    $total_con_descuento = 0;
+    $total_linea = 0;
+    $totalVentasNeta = 0;
+    $totalComprobante = 0;
+    $descuento_por_linea = 0;
+    $otros = '';
+    $TotalImpuesto = 0;
+    $otrosType = 0;
+    //servicos de restaurante
+    $incluirServicioRestaurante = 0;
+    //total por linea con iv
+    $total_con_iv_x_linea = 0;
+    $id_local = session()->get('Local_Selected');
+    //detalles del recibo
+    $recibo =
+        ' <div class="col-md-10" id="printSection">
+        <div class="text-center">';
+    //datos empresa
+    $datoPerfil = Empresa::all();
+
+    $nombreComercial ='';
+    $direccion = '';
+    foreach ($datoPerfil as $key => $value){
+        $nombreComercial = $value['nombre_empresa'];
+        $direccion = $value['direccion_empresa'];
+
+    }
+    //datos del encabezado
+    $recibo .= '<div class="table-responsive">
+    <table class="table">
+            <tr>
+                <td color: #34495e;text-align:center">
+                      <span style="color: #34495e;font-weight:bold">
+                        ' . $nombreComercial . '</span><br>';
+                        $infocontacto = DB::table('contacto_empresa')
+                        ->join('contactos', 'contacto_empresa.contacto_id', '=', 'contactos.id')
+                        ->join('tipo_dato_contacto', 'contactos.tipo_dato_id', '=', 'tipo_dato_contacto.id')
+                         ->get();
+                         //dd($infocontacto);
+                     $total_row = $infocontacto->count();
+                     if ($total_row > 0) {
+                         foreach ($infocontacto as $row) {
+                            $recibo .= $row->tdc_texto.': '.$row->c_info.'<br>';
+                         }
+                     }
+                     $recibo .= '
+                     Direccion:' . $direccion . '
+                </td>
+              </tr>
+          </table>
+        </div>';
+
+        $recibo .= '<strong>Documento # </strong>' . numeor_factura($id) . '<br>';
+    //encabezado tabla
+    $recibo .= '<br>
+             <div style="clear:both;">
+               <table class="table" cellspacing="0" border="0">
+                 <thead>
+                   <tr>
+                     <th >Detalle</th>
+                     <th >Cant</th>
+                     <th  >Prec</th>
+                     <th  >Total</th>
+                   </tr>
+                 </thead>
+                 <tbody>';
+    ///obetnesmos datos de detalles
+    ///obetnesmos datos de detalles
+    ///obetnesmos datos de detalles
+    ///obetnesmos datos de detalles
+    ///obetnesmos datos de detalles
+    ///obetnesmos datos de detalles
+
+    $infoDetalle = DB::table('factura_detalles')
+    ->join('productos', 'factura_detalles.producto_id', '=', 'productos.id')
+    ->where('factura_detalles.factura_id', '=', 1)
+     ->get();
+     $producto = '';
+     $cantidad = '';
+     $precio = '';
+     $cont = 0;
+     $total_linea = 0;
+     $lineas_fact = [];
+     $total_row2 = $infoDetalle->count();
+                     if ($total_row2 > 0) {
+                         foreach ($infoDetalle as $row) {
+                            $cont += 1;
+                            $producto = $row->p_nombre;
+                            $cantidad = $row->fd_cantidad;
+                            $precio = $row->fd_precio_venta;
+            $total_linea = $cantidad * $precio; //total linea bruto
+                    // hay descuento
+                    // llenamos array con iv
+                    $recibo .= ' <tr>
+                    <td >' . $producto.'</td>
+                    <td >' . $cantidad . '</td>
+                    <td >¢ ' . redondearDosDecimal($precio, 2);
+                       $recibo .= '</td>
+                    <td >¢ ' . redondearDosDecimal($total_linea, 2);
+                       $recibo .= '</td>
+                  </tr>';
+        } //cierre foreach detalles de producto
+
+        //recibo
+        $colspan = '3';
+        $colspan2 = '5';
+        $recibo .=
+            '<tr>
+                 <td>Total Items</td>
+                 <td>' . redondearDosDecimal($cont, 2) . '</td>
+               </tr>
+               <tr>
+                 <td colspan="' . $colspan . '" >Total</td>
+                 <td colspan="' . $colspan2 . '" >¢ ' . redondearDosDecimal($total_linea, 2) . '</td>
+               </tr>';
+        $recibo .=  '
+               </tbody>
+             </table>
+              ';
+        $recibo .= '
+                 <p >
+                   Gracias por permitirnos brindar los servicios de ' . $nombreComercial . '!
+                   </p>
+           </div>
+         </div>
+       </div>
+    </div>
+    </div>
+  ';
+} //cierre validacion si hay detalles
+ return $recibo;
+}
 //brinda el estado de la factura
 //brinda el estado de la factura
 //brinda el estado de la factura
@@ -110,6 +252,11 @@ function Set_Factura_Session($IdFacturaPerfil)
 {
     session(['NumeroFactura' => $IdFacturaPerfil]);
     //return response()->json('ok');
+}
+//numero de factura
+function numeor_factura($id)
+{
+    return Factura::findOrFail($id)->f_numero;
 }
 //titpo pago
 function metodo_pago_texto($id)

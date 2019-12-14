@@ -45,15 +45,46 @@
 
                                 <form method="POST" class="mt-5 mb-5 login-input" action="{{ route('register') }}">
                                   @csrf
-
-                                    <div class="form-group">
-                                        <input id="name" type="text" class="form-control @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" autofocus  placeholder="Name" >
-                                          @error('name')
-                                              <span class="invalid-feedback" role="alert">
-                                                  <strong>{{ $message }}</strong>
-                                              </span>
-                                          @enderror
+                                  <div class="form-row">
+                                        <div class="form-group col-md-6">
+                                                {{ Form::label('name', 'Name') }}
+                                                {{ Form::text('name', '', array('class' => 'form-control')) }}
+                                                @error('name')
+                                                <span class="invalid-feedback" role="alert">
+                                                    <strong>{{ $message }}</strong>
+                                                </span>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                                <label>Tipo de Identificacion</label>
+                                                <select class="form-control form-control-sm"  name="tipo_identificacion">
+                                                        <option ></option>
+                                                        <option value="1">Cédula</option>
+                                                        <option value="2">DIMEX</option>
+                                                        <option value="3">Pasaporte</option>
+                                                    </select>
+                                        </div>
                                     </div>
+                                    <div class="form-group col-md-6">
+                                            {{ Form::label('name', 'Número de Indentificación') }}
+                                            {{ Form::text('identificacion', '', array('class' => 'form-control')) }}
+                                    </div>
+                                    <div class="form-row">
+                                            <div class="form-group col-md-6">
+                                                    <label>Tipo de Telefono</label>
+                                                    <select class="form-control form-control-sm"  name="tipo_telefono">
+                                                            <option ></option>
+                                                            <option value="1">Celular</option>
+                                                            <option value="2">Fijo Oficina</option>
+                                                            <option value="3">Fijo Casa</option>
+                                                        </select>
+                                            </div>
+                                            <div class="form-group col-md-6">
+                                                    {{ Form::label('name', 'Número de Telefono') }}
+                                                    {{ Form::number('telefono', '', array('class' => 'form-control')) }}
+                                            </div>
+                                        </div>
+
                                     <div class="form-group">
                                         <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email"  placeholder="{{ __('E-Mail Address') }}" >
                                           @error('email')

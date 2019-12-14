@@ -4,20 +4,20 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
-use App\User;
-use Auth;
+use App\User;//modelo columnas de la tabla
+use Auth; //verifica si el usaurio esta logeado
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Traits\HasRoles; //para verifica roles y permisos
 //Importing laravel-permission models
-use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Role; //para verifica roles y permisos
 use Spatie\Permission\Models\Permission;
-use Yajra\DataTables\DataTables;
+use Yajra\DataTables\DataTables; //un plugins para mostrar registros en una tabla dinamica
 //Enables us to output flash messaging
 use Session;
 
 class UserController extends Controller {
     public function __construct() {
-        $this->middleware(['auth', 'isAdmin']); //isAdmin middleware lets only users with a //specific permission permission to access these resources
+        $this->middleware(['auth', 'isAdmin']);//parte de un plugin //isAdmin middleware lets only users with a //specific permission permission to access these resources
     }
 
     /**
@@ -67,7 +67,7 @@ class UserController extends Controller {
           'created_at'=>date("d/m/Y", strtotime($row['created_at']))
         ];
       }
-      return Datatables::of($obj)->make(true);
+      return Datatables::of($obj)->make(true);//esto es lo que le pasa el objecto a la tabla dimanamica
 
     }
         /**

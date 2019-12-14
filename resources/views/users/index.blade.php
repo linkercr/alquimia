@@ -44,7 +44,7 @@
 @endsection
 @section('js_bajo_body')
 <script>
-
+//muestra los registros
         var table1 = $('#info-table').DataTable({
           processing:true,
           serverSide:true,

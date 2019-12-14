@@ -15,15 +15,20 @@
                                          </div>
                                         <div class="panel-title pull-right">
                                                 <a target="_blank" href="{{ URL::to('/crear_reporte_productos/1') }}" class="btn mb-1 btn-flat btn-warning">Export PDF</a>
-                                            <a href="{{ route('productos.create')}}" type="button" class="btn mb-1 btn-flat btn-outline-success">
-                                                Nuevo Producto</a></div>
+                                                @if (Auth::user()->hasRole('Admin'))
+                                                <a href="{{ route('productos.create')}}" type="button" class="btn mb-1 btn-flat btn-outline-success">
+                                                Nuevo Producto</a>
+                                                @endif
+                                            </div>
                                         <div class="clearfix"></div>
                                     </div>
                                     <div id="linkCarro" class="alert alert-success alert-dismissible fade show" style="display:none;">
                                             <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+
                                             </button> <strong>Genial !</strong> se ha agregado el producto al carrito sastifactoriamente.
                                             <a href="{{ route('carro.index')}}" type="button" class="btn mb-1 btn-flat btn-outline-warning">Ir al Carrito <span class="btn-icon-right"><i class="fa fa-shopping-cart"></i></span>
                                             </a>
+
                                         </div>
 
                                 </div>

@@ -2,10 +2,17 @@
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
 use App\FacturaPago;
-use App\MetodoPago;
+use App\Empresa;
 Route::get('correo', function () {
-    $metodoPago = MetodoPago::all();
-    $pagos_registrados = FacturaPago::where('factura_id', '=', 4)->get();
+    $datos =DB::select('SELECT * FROM
+    facturas
+     INNER JOIN factura_detalles ON factura_detalles.factura_id = facturas.id
+     INNER JOIN users ON facturas.usario_id = users.id
+     WHERE
+     factura_detalles.deleted_at IS NULL AND
+     facturas.f_estado =1' );
+
+dd($datos);
 
 
     });
@@ -21,6 +28,8 @@ Route::get('correo', function () {
 
 Auth::routes();
 Route::get('/', 'HomeController@index')->name('home');
+//Route::post('reportes/ventas', 'PDFController@generarxUsuario')->name('detalle.usuario');
+Route::post('reportes/ventas', 'PDFController@generarxUsuario')->name('resumen.proceder');
 
 Route::group( ['middleware' => ['auth']], function() {
     //Route::get('empresa', 'EmpresaController@index')->name('empresa');
@@ -68,6 +77,13 @@ Route::group( ['middleware' => ['auth']], function() {
 
     Route::get('crear_reporte/{tipo}', 'PDFController@crear_detallePedidos');
     Route::get('crear_reporte_productos/{tipo}', 'PDFController@crear_reporte_productos');
+    Route::get('crear_reporte_facturado/{tipo}', 'PDFController@crear_detalle_facturado');
+    Route::get('crear_reporte_usaurio/{tipo}/{fechain}/{fechafin}/{us}', 'PDFController@generarxUsuarioPDF');
+
+    Route::resource('facturas', 'FacturadoController');//
+    Route::get('/all/facturado', 'FacturadoController@Registro_Total_facturado')->name('all.facturado');
+    Route::post('validar/detalle/factura', 'FacturadoController@datosRecibo')->name('detalle.factura');
+
 
 
 });

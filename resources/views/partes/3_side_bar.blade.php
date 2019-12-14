@@ -21,6 +21,11 @@
                     </a>
             </li>
             <li>
+                    <a href="{{ route('facturas.index')}}" aria-expanded="false">
+                        <i class="fa fa-history"></i><span class="nav-text">Facturado</span>
+                    </a>
+            </li>
+            <li>
                     <a class="has-arrow" href="javascript:void()" aria-expanded="false">
                          <i class="fa fa-check-square-o"></i> <span class="nav-text">Control</span>
                      </a>

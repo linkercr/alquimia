@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 Use Alert;
-
+use App\User;
 class HomeController extends Controller
 {
     /**
@@ -24,7 +24,8 @@ class HomeController extends Controller
      */
     public function index()
     {
+        $query = User::all();
         //Alert::success('Success Title', 'Success Message');
-        return view('home');
+        return view('home', compact('query'));
     }
 }
