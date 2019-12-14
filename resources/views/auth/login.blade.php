@@ -51,7 +51,15 @@
                         <div class="card login-form mb-0">
                             <div class="card-body pt-5">
                                 <a class="text-center" href="index.html"> <h4>SIF Login </h4></a>
-
+                                @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div><br />
+                                @endif
                                 <form class="mt-5 mb-5 login-input" method="POST" action="{{ route('login') }}">
                                     @csrf
                                     <div class="form-group">
@@ -75,6 +83,20 @@
                                         <div class="col-md-6 offset-md-4">
                                         </div>
                                     </div>
+                                    <div class="row">
+                                            <div class="col-md-4"></div>
+                                            <div class="form-group col-md-4">
+                                               <div class="captcha">
+                                                 <span>{!! captcha_img() !!}</span>
+                                                 <button type="button" class="btn btn-success"><i class="fa fa-refresh" id="refresh"></i></button>
+                                                 </div>
+                                              </div>
+                                          </div>
+                                    <div class="row">
+                                            <div class="col-md-4"></div>
+                                              <div class="form-group col-md-4">
+                                               <input id="captcha" type="text" class="form-control" placeholder="Enter Captcha" name="captcha"></div>
+                                            </div>
                                             <button type="submit" class="btn login-form__btn submit w-100">
                                                 {{ __('Login') }}
                                             </button>
@@ -101,6 +123,17 @@
     </div>
 
 
+    <script type="text/javascript">
+        $('#refresh').click(function(){
+          $.ajax({
+             type:'GET',
+             url:'refreshcaptcha',
+             success:function(data){
+                $(".captcha span").html(data.captcha);
+             }
+          });
+        });
+        </script>
 
 
     <!--**********************************

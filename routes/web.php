@@ -17,6 +17,7 @@ dd($datos);
 
     });
 
+
     Route::get('/clear', function() {
         $exitCode = Artisan::call('config:clear');
         $exitCode = Artisan::call('cache:clear');
@@ -24,7 +25,9 @@ dd($datos);
         $exitCode = Artisan::call('view:clear');
         return 'DONE'; //Return anything
     });
-
+    Route::get('createcaptcha', 'CaptchaController@create');
+    Route::post('captcha', 'CaptchaController@captchaValidate');
+    Route::get('refreshcaptcha', 'CaptchaController@refreshCaptcha');
 
 Auth::routes();
 Route::get('/', 'HomeController@index')->name('home');

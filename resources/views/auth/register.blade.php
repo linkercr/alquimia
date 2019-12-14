@@ -42,7 +42,15 @@
                             <div class="card-body pt-5">
 
                                     <a class="text-center" href="index.html"> <h4>{{ __('Register') }}</h4></a>
-
+                                    @if ($errors->any())
+                                    <div class="alert alert-danger">
+                                        <ul>
+                                            @foreach ($errors->all() as $error)
+                                                <li>{{ $error }}</li>
+                                            @endforeach
+                                        </ul>
+                                    </div><br />
+                                    @endif
                                 <form method="POST" class="mt-5 mb-5 login-input" action="{{ route('register') }}">
                                   @csrf
                                   <div class="form-row">
@@ -105,6 +113,20 @@
                                     <div class="form-group">
                                         <input id="password-confirm" type="password" class="form-control " name="password_confirmation" required autocomplete="new-password" placeholder="{{ __('Confirm Password') }}" required>
                                     </div>
+                                    <div class="row">
+                                            <div class="col-md-4"></div>
+                                            <div class="form-group col-md-4">
+                                               <div class="captcha">
+                                                 <span>{!! captcha_img() !!}</span>
+                                                 <button type="button" class="btn btn-success"><i class="fa fa-refresh" id="refresh"></i></button>
+                                                 </div>
+                                              </div>
+                                          </div>
+                                    <div class="row">
+                                            <div class="col-md-4"></div>
+                                              <div class="form-group col-md-4">
+                                               <input id="captcha" type="text" class="form-control" placeholder="Enter Captcha" name="captcha"></div>
+                                            </div>
                                     <button type="submit" class="btn login-form__btn submit w-100">{{ __('Register') }}</button>
                                 </form>
                                     <p class="mt-5 login-form__footer">Have account <a href="{{ route('login') }}" class="text-primary">Sign Up </a> now</p>
@@ -118,7 +140,17 @@
         </div>
     </div>
 
-
+    <script type="text/javascript">
+        $('#refresh').click(function(){
+          $.ajax({
+             type:'GET',
+             url:'refreshcaptcha',
+             success:function(data){
+                $(".captcha span").html(data.captcha);
+             }
+          });
+        });
+        </script>
 
 
     <!--**********************************
@@ -131,3 +163,4 @@
     <script src="js/styleSwitcher.js"></script>
 </body>
 </html>
+
