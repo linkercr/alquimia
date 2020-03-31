@@ -3376,7 +3376,7 @@
                 "symfony/config": "^4.2|^5.0",
                 "symfony/dependency-injection": "^3.4|^4.0|^5.0",
                 "symfony/expression-language": "^3.4|^4.0|^5.0",
-                "symfony/http-foundation": "^3.4|^4.0|^5.0",
+                "symfony/http-foundation": "4.4.7",
                 "symfony/yaml": "^3.4|^4.0|^5.0"
             },
             "suggest": {

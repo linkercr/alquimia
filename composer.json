@@ -10,7 +10,6 @@
     "require": {
         "php": "^7.2",
         "barryvdh/laravel-dompdf": "^0.8.5",
-        "captcha-com/laravel-captcha": "4.*",
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.2",
         "laravel/tinker": "^1.0",

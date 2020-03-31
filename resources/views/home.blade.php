@@ -253,8 +253,6 @@
 }
 $(document).on('change', '#user_id', function(){
  $('#user').val($(this).val());
-
-
 });
 </script>
 
